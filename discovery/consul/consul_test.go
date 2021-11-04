@@ -418,8 +418,8 @@ func TestUnmarshalConfig(t *testing.T) {
 	cases := []struct {
 		name       string
 		config     string
-		expected   SDConfig
 		errMessage string
+		expected   SDConfig
 	}{
 		{
 			name: "good",
