@@ -3,11 +3,8 @@ module github.com/prometheus/prometheus
 go 1.14
 
 require (
-	github.com/Azure/azure-sdk-for-go v58.2.0+incompatible
 	github.com/Azure/go-autorest/autorest v0.11.21
 	github.com/Azure/go-autorest/autorest/adal v0.9.16
-	github.com/Azure/go-autorest/autorest/to v0.4.0 // indirect
-	github.com/Azure/go-autorest/autorest/validation v0.3.1 // indirect
 	github.com/alecthomas/units v0.0.0-20210927113745-59d0afb8317a
 	github.com/aws/aws-sdk-go v1.42.4
 	github.com/cespare/xxhash/v2 v2.1.2
@@ -15,7 +12,7 @@ require (
 	github.com/dennwc/varint v1.0.0
 	github.com/dgryski/go-sip13 v0.0.0-20200911182023-62edffca9245
 	github.com/digitalocean/godo v1.69.1
-	github.com/docker/docker v20.10.9+incompatible
+	github.com/docker/docker v20.10.10+incompatible
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/edsrzf/mmap-go v1.0.0
 	github.com/envoyproxy/go-control-plane v0.9.9
