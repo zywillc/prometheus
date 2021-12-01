@@ -539,11 +539,11 @@ var expectedConf = &Config{
 
 			ServiceDiscoveryConfigs: discovery.Configs{
 				&aws.MSKSDConfig{
-					Region:          "us-east-1",
-					AccessKey:       "access",
-					SecretKey:       "mysecret",
-					Profile:         "profile",
-					RefreshInterval: model.Duration(60 * time.Second),
+					Region:            "us-east-1",
+					AccessKey:         "access",
+					SecretKey:         "mysecret",
+					Profile:           "profile",
+					RefreshInterval:   model.Duration(60 * time.Second),
 					ClusterNameFilter: "msk_demo",
 				},
 			},

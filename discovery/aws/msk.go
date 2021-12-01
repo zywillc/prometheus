@@ -37,12 +37,12 @@ import (
 )
 
 const (
-	mskLabel                  = model.MetaLabelPrefix + "msk_"
-	mskLabelClusterName		  = mskLabel + "cluster_name"
-	mskLabelTag               = mskLabel + "tag_"
-	mskLabelKafkaVersion	  = mskLabel + "kafka_version"
-	mskLabelClusterSize       = mskLabel + "cluster_size"
-	mskLabelSeparator         = ","
+	mskLabel             = model.MetaLabelPrefix + "msk_"
+	mskLabelClusterName  = mskLabel + "cluster_name"
+	mskLabelTag          = mskLabel + "tag_"
+	mskLabelKafkaVersion = mskLabel + "kafka_version"
+	mskLabelClusterSize  = mskLabel + "cluster_size"
+	mskLabelSeparator    = ","
 )
 
 // DefaultMSKSDConfig is the default MSK SD configuration.
@@ -56,13 +56,13 @@ func init() {
 
 // MSKSDConfig is the configuration for MSK based service discovery.
 type MSKSDConfig struct {
-	Region          	string         `yaml:"region"`
-	AccessKey       	string         `yaml:"access_key,omitempty"`
-	SecretKey       	config.Secret  `yaml:"secret_key,omitempty"`
-	Profile         	string         `yaml:"profile,omitempty"`
-	RoleARN         	string         `yaml:"role_arn,omitempty"`
-	RefreshInterval 	model.Duration `yaml:"refresh_interval,omitempty"`
-	ClusterNameFilter	string 		   `yaml:"cluster_name_filter,omitempty"`
+	Region            string         `yaml:"region"`
+	AccessKey         string         `yaml:"access_key,omitempty"`
+	SecretKey         config.Secret  `yaml:"secret_key,omitempty"`
+	Profile           string         `yaml:"profile,omitempty"`
+	RoleARN           string         `yaml:"role_arn,omitempty"`
+	RefreshInterval   model.Duration `yaml:"refresh_interval,omitempty"`
+	ClusterNameFilter string         `yaml:"cluster_name_filter,omitempty"`
 }
 
 // Name returns the name of the MSK Config.
@@ -93,7 +93,7 @@ type MSKDiscovery struct {
 	*refresh.Discovery
 	logger log.Logger
 	cfg    *MSKSDConfig
-	kafka    *kafka.Kafka
+	kafka  *kafka.Kafka
 }
 
 // NewMSKDiscovery returns a new MSKDiscovery which periodically refreshes its targets.
@@ -145,7 +145,6 @@ func (d *MSKDiscovery) mskClient(ctx context.Context) (*kafka.Kafka, error) {
 	return d.kafka, nil
 }
 
-
 func (d *MSKDiscovery) refresh(ctx context.Context) ([]*targetgroup.Group, error) {
 	mskClient, err := d.mskClient(ctx)
 	if err != nil {
@@ -180,7 +179,7 @@ func (d *MSKDiscovery) refresh(ctx context.Context) ([]*targetgroup.Group, error
 	}
 
 	exporterPorts := map[string]int{
-		"jmx": 	11001,
+		"jmx":  11001,
 		"node": 11002,
 	}
 
@@ -209,8 +208,8 @@ func (d *MSKDiscovery) refresh(ctx context.Context) ([]*targetgroup.Group, error
 
 			cluster, err := mskClient.DescribeCluster(descClusterInput)
 
-			for _, brokerUrl := range strings.Split(*brokers.BootstrapBrokerString, ",") {
-				host, _, _ := net.SplitHostPort(brokerUrl)
+			for _, brokerURL := range strings.Split(*brokers.BootstrapBrokerString, mskLabelSeparator) {
+				host, _, _ := net.SplitHostPort(brokerURL)
 				addr := net.JoinHostPort(host, fmt.Sprintf("%d", port))
 				target := model.LabelSet{
 					model.AddressLabel: model.LabelValue(addr),
