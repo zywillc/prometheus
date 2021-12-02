@@ -56,16 +56,21 @@ func init() {
 	discovery.RegisterConfig(&MSKSDConfig{})
 }
 
+type TagFilter struct {
+	Key     string `yaml:"key"`
+	Pattern string `yaml:"pattern"`
+}
+
 // MSKSDConfig is the configuration for MSK based service discovery.
 type MSKSDConfig struct {
-	Region            string            `yaml:"region"`
-	AccessKey         string            `yaml:"access_key,omitempty"`
-	SecretKey         config.Secret     `yaml:"secret_key,omitempty"`
-	Profile           string            `yaml:"profile,omitempty"`
-	RoleARN           string            `yaml:"role_arn,omitempty"`
-	RefreshInterval   model.Duration    `yaml:"refresh_interval,omitempty"`
-	ClusterNameFilter string            `yaml:"cluster_name_filter,omitempty"`
-	TagFilters        map[string]string `yaml:"tag_filters,omitempty"`
+	Region            string         `yaml:"region"`
+	AccessKey         string         `yaml:"access_key,omitempty"`
+	SecretKey         config.Secret  `yaml:"secret_key,omitempty"`
+	Profile           string         `yaml:"profile,omitempty"`
+	RoleARN           string         `yaml:"role_arn,omitempty"`
+	RefreshInterval   model.Duration `yaml:"refresh_interval,omitempty"`
+	ClusterNameFilter string         `yaml:"cluster_name_filter,omitempty"`
+	TagFilters        []*TagFilter   `yaml:"tag_filters,omitempty"`
 }
 
 // Name returns the name of the MSK Config.
@@ -153,16 +158,16 @@ func (d *MSKDiscovery) mskClient(ctx context.Context) (*kafka.Kafka, error) {
 	return d.kafka, nil
 }
 
-func filterByTags(clusterInfoList []*kafka.ClusterInfo, matchingTags map[string]string) []*kafka.ClusterInfo {
-	if matchingTags == nil {
+func filterByTags(clusterInfoList []*kafka.ClusterInfo, tagFilters []*TagFilter) []*kafka.ClusterInfo {
+	if tagFilters == nil {
 		return clusterInfoList
 	}
 	var filteredList []*kafka.ClusterInfo
 	for _, c := range clusterInfoList {
 		flag := true
-		for k, v := range matchingTags {
-			if tag, ok := c.Tags[k]; ok {
-				match, err := regexp.MatchString(v, *tag)
+		for _, filter := range tagFilters {
+			if tag, ok := c.Tags[filter.Key]; ok {
+				match, err := regexp.MatchString(filter.Pattern, *tag)
 				if err != nil {
 					continue
 				}
