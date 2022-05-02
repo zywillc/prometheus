@@ -222,7 +222,12 @@ func (d *MSKDiscovery) refresh(ctx context.Context) ([]*targetgroup.Group, error
 	var clusterTargets []*clusterTarget
 	for _, clusterInfo := range clusterInfoList {
 		brokerCnt := *clusterInfo.NumberOfBrokerNodes
-		hostSuffix := extractHostSuffix(clusterInfo.ZookeeperConnectString)
+		zkStrings := clusterInfo.ZookeeperConnectString
+		if zkStrings == nil {
+			continue
+		}
+
+		hostSuffix := extractHostSuffix(zkStrings)
 
 		var hosts []*string
 		for i := 1; i <= int(brokerCnt); i++ {
